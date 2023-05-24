@@ -10,9 +10,6 @@ UCLASS(minimalapi)
 class ADectusGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-
-public:
-	ADectusGameMode();
 };
 
 
