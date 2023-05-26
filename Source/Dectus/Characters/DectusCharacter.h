@@ -21,11 +21,20 @@ public:
 	UFUNCTION()
 	void GrantAbilities();
 
+	UFUNCTION()
+	void InitializeAttributes();
+
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GameplayAbilities")
 	TArray<TSubclassOf<class UGameplayAbility>> DefaultAbilities;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GameplayAbilities")
+	TSubclassOf<class UGameplayEffect> DefaultAttribute;
+
 	UPROPERTY(BlueprintReadOnly)
 	class UAbilitySystemComponent* AbilitySystemComponent;
+
+	UPROPERTY(BlueprintReadOnly)
+	class UDectusAttributeSet* Attributes;
 };
 
