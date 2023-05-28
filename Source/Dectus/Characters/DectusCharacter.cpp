@@ -5,8 +5,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include <Abilities/GameplayAbility.h>
 #include "../GameplayAbility/DectusAttributeSet.h"
+#include "../Components/DectusCharacterMovementComponent.h"
 
-ADectusCharacter::ADectusCharacter()
+ADectusCharacter::ADectusCharacter(const class FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UDectusCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComp");
 	Attributes = CreateDefaultSubobject<UDectusAttributeSet>("Attributes");

@@ -7,14 +7,17 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "../Components/DectusCharacterMovementComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
 // ADectusPlayerCharacter
 
-ADectusPlayerCharacter::ADectusPlayerCharacter()
+ADectusPlayerCharacter::ADectusPlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UDectusCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -39,6 +42,51 @@ ADectusPlayerCharacter::ADectusPlayerCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+bool ADectusPlayerCharacter::IsTheWallRunnable(FVector WallNormal)
+{
+	bool bIsTheWallRunnable    = false;
+	bool bWallSteepCheck       = false;
+	bool bCharacterVectorCheck = false;
+	bool bCharacterSpeedCheck  = false;
+
+	float Z = WallNormal.Z;
+	float CosTheta = WallNormal.CosineAngle2D(GetActorForwardVector());
+	float Theta = acos(CosTheta) * 180 / PI;
+	float Speed = GetVelocity().Length();
+
+	if (Z >= -0.52 && Z <= 0.52)
+	{
+		bWallSteepCheck = true;
+	}
+	if (Theta >= 30 && Theta <= 80)
+	{
+		bCharacterVectorCheck = true;
+	}
+	if (Speed >= 2000)
+	{
+		bCharacterSpeedCheck = true;
+	}
+	if (bWallSteepCheck && bCharacterVectorCheck && bCharacterSpeedCheck)
+	{
+		bIsTheWallRunnable = true;
+	}
+
+	return bIsTheWallRunnable;
+}
+
+void ADectusPlayerCharacter::BeginWallRun(FVector WallNormal)
+{
+	GetCharacterMovement()->SetPlaneConstraintEnabled(true);
+	GetCharacterMovement()->SetPlaneConstraintNormal(WallNormal);
+	GetCharacterMovement()->SetMovementMode(MOVE_Custom, 1);
+}
+
+void ADectusPlayerCharacter::EndWallRun()
+{
+	GetCharacterMovement()->SetPlaneConstraintEnabled(false);
+	GetCharacterMovement()->SetPlaneConstraintNormal(FVector());
+}
+
 void ADectusPlayerCharacter::BeginPlay()
 {
 	// Call the base class  
@@ -51,5 +99,14 @@ void ADectusPlayerCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+	}
+}
+
+void ADectusPlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode /*= 0*/)
+{
+	// If the last movement mode is wall run 
+	if (PrevMovementMode == MOVE_Custom && PreviousCustomMode == 1)
+	{
+		EndWallRun();
 	}
 }

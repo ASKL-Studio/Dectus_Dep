@@ -13,7 +13,7 @@ class DECTUS_API ADectusCharacter : public ACharacter, public IAbilitySystemInte
 	GENERATED_BODY()
 
 public:
-	ADectusCharacter();
+	ADectusCharacter(const class FObjectInitializer& ObjectInitializer);
 
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override; 
 	virtual void BeginPlay() override;
