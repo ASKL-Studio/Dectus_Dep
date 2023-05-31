@@ -17,11 +17,11 @@ class DECTUS_API UDectusCharacterMovementComponent : public UCharacterMovementCo
 	GENERATED_BODY()
 	
 public : 
-	virtual void PhysCustom(float deltaTime, int32 Iteration) override;
+	virtual void PhysCustom(float deltaTime, int32 Iterations) override;
 
 	UFUNCTION()
-	void PhysWallRunning(float deltaTime, int32 Iteration);
+	void PhysWallRunning(float deltaTime, int32 Iterations);
 
 	UFUNCTION()
-	void PhysSliding(float deltaTime, int32 Iteration);
+	void PhysSliding(float deltaTime, int32 Iterations);
 };
